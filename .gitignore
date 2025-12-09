@@ -1,0 +1,6 @@
+? latex临时文件
+*.aux
+*.bbl
+*.blg
+*.log
+*.out

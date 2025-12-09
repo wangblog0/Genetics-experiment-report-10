@@ -1,0 +1,632 @@
+% !TEX program = xelatex
+% -*- coding: utf-8 -*-
+\documentclass[a4paper]{article}
+
+% -------------------- 中文支持 (XeLaTeX) --------------------
+% 推荐使用 XeLaTeX 编译以获得更好的中文字体支持
+\usepackage{fontspec}            % XeLaTeX 字体接口
+\usepackage{xeCJK}               % 中文支持
+\setCJKmainfont[AutoFakeBold=true]{SimSun} % 正文中文（可替换为 SimHei, 宋体, 思源宋体等）
+\setCJKsansfont{SimHei}         % 无衬线中文
+\setCJKmonofont{FangSong}       % 等宽中文（可选）
+\setmainfont{Times New Roman}    % 英文字体
+\setsansfont{Arial}
+
+% -------------------- 编码与语言 --------------------
+\usepackage{babel}
+\usepackage{microtype}           % 文本微调（对 XeLaTeX 有部分支持）
+
+% -------------------- 页面布局 --------------------
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% -------------------- 图表与浮动体 --------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{tikz}
+
+\captionsetup{font=small,labelfont=bf}
+
+% -------------------- 数学与代码 --------------------
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{siunitx}             % 物理量与单位
+\usepackage{listings}            % 源代码显示（如需要）
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    breakatwhitespace=false,
+    breakindent=0pt,
+    breakautoindent=false,
+    columns=flexible,
+    keepspaces=true,
+    literate={A}{A\allowbreak}1 {T}{T\allowbreak}1 {C}{C\allowbreak}1 {G}{G\allowbreak}1
+}
+
+% -------------------- 超链接 --------------------
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+% -------------------- 页眉页脚 --------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{mtDNA进化分析}
+\fancyhead[R]{王翔宇 2023521039}
+\fancyfoot[C]{\thepage}
+
+% 使得 document 中使用 plain 页眉样式的页面（如 \maketitle）也显示相同的页眉页脚
+\fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyhead[L]{mtDNA进化分析}%
+    \fancyfoot[C]{\thepage}%
+}
+
+% -------------------- 其他实用宏包 --------------------
+\usepackage{enumitem}            % 自定义列表样式
+\usepackage{longtable}           % 跨页表格
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{cleveref}
+\usepackage{dnaseq}
+
+% -------------------- 文档开始 --------------------
+\begin{document}
+
+\title{}
+\author{王翔宇 2023521039}
+\date{}
+\maketitle
+
+% 后续正文占位（用户可在这里继续写各部分）
+% 下面我会在 TODO 中添加一个任务去插入完整正文结构
+
+\section{实验名称}
+\noindent mtDNA进化分析
+
+\section{实验目的}
+\begin{enumerate}
+    \item 了解线粒体DNA (mtDNA) 的结构与功能
+    \item 掌握口腔上皮细胞基因组DNA的提取方法
+    \item 学习用软件对获得的DNA序列进行初步分析的方法
+    \item 对序列比对结果进行单核苷酸多态性的分析，从而追踪人类进化的轨迹，并进行亲缘关系的分析
+\end{enumerate}
+
+\section{实验原理}
+
+\subsection*{一、线粒体的基本结构与功能}
+线粒体是细胞中的重要细胞器，其结构与功能直接关联到mtDNA的遗传特性：
+\begin{itemize}
+    \item \textbf{结构特征}：
+    \begin{itemize}
+        \item 光镜下呈颗粒状，电镜下可见双层膜结构及嵴（内膜折叠形成），这为氧化磷酸化提供了巨大表面积。
+        \item 作为“能量工厂”，线粒体分布有三羧酸循环系统和电子传递系统，是细胞产生ATP（腺苷三磷酸）的主要场所。
+        \item 线粒体是核外唯一含有遗传效应物质的细胞器，这意味着mtDNA独立于核基因组，具有独特的遗传规律。
+    \end{itemize}
+    \item \textbf{功能角色}：mtDNA编码部分线粒体蛋白，参与能量代谢，其突变可能影响细胞功能，如与Leber遗传性视神经病等疾病相关。
+\end{itemize}
+
+\subsection*{二、线粒体DNA的遗传学特征}
+mtDNA的遗传方式具有特殊性，下列六个关键特征决定了其在进化分析和亲缘关系研究中的价值：
+\begin{enumerate}
+    \item \textbf{母系遗传}：mtDNA通常通过母系传递，但也有研究（如Lu等、Rius等）探讨父系遗传的可能性，结论是双亲遗传并非常见，临床实践中仍以母系遗传为主。
+    \item \textbf{异质性}：个体内可能存在多种mtDNA序列变体，这源于突变或细胞分裂中的不均匀分布（即异质质/均质质现象）。
+    \item \textbf{阈值效应}：mtDNA突变需积累到一定比例才会表现表型，这与线粒体的功能冗余相关。
+    \item \textbf{半自主性}：mtDNA部分依赖核基因组进行复制和表达，但拥有独立的遗传系统。
+    \item \textbf{高突变率}：mtDNA的突变率比核DNA高约10倍，原因包括线粒体缺乏高效的DNA修复机制且暴露于氧化应激环境。
+    \item \textbf{多态性}：mtDNA在人群中呈现高度变异，为人类进化和疾病研究提供了分子标记。
+\end{enumerate}
+
+\subsection*{三、mtDNA的多态性类型及其机制}
+文档将mtDNA多态性分为两类，这直接关联到实验中的序列分析方法：
+\begin{itemize}
+    \item \textbf{点的多态性}：指单个碱基的突变（如碱基替换），可能导致限制性内切酶位点的丢失或新增，可通过Southern杂交或酶切图谱等技术检测。例如，Leber遗传性视神经病与nt11778 G$>$A突变相关，体现了点突变的功能影响。
+    \item \textbf{序列多态性}：由缺失、重复或插入事件引起，或由于高变区内串联重复序列的拷贝数差异所致。这类多态性不一定改变酶切位点的碱基，但会改变其在基因组中的相对位置，常需通过PCR与测序来分析。序列多态性主要集中在D-loop（控制区），包括高变区HV1（nt16024--nt16365，342 bp）和HV2（nt73--nt340，268 bp），这些区域变异速率高，是实验的重点分析靶点。
+\end{itemize}
+
+\subsection*{四、高变区（HV1和HV2）的关键作用}
+高变区HV1和HV2是mtDNA中变异最集中的区域，碱基变异速率高，适用于追踪人类进化轨迹和进行群体分析。实验原理中常用于PCR扩增的引物示例包括HV1引物（如L15997和H16391），可用于扩增约430 bp的HV1片段；HV2引物用于扩增约400 bp的HV2片段。通过扩增并测序这些区域，结合参考序列（如Revised Cambridge Reference Sequence或RSRS）进行比对与SNP分析，可识别个体间的差异并初步判断mtDNA单倍群归属。
+
+以上内容已插入实验原理节，便于后续对PCR、酶切及序列分析的原理与实验设计进行引用和展开。
+
+\section{实验试剂和耗材}
+
+\begin{enumerate}
+    \item 材料：人口腔上皮细胞 
+    \item 试剂：灭菌水，1 × TAE，Ezup 柱式口腔拭子基因组 DNA 抽提试剂盒，2 × Taq Master Mix, Marker,loading buffer, 引物 
+    \item 仪器：PCR仪，高速离心机，金属浴，电泳仪 
+    \item 其他用品：一次性纸杯，1.5 ml 离心管，0.2 ml PCR反应管，各种规格灭菌吸头，各量程移液器
+\end{enumerate}
+
+
+
+\section{实验步骤}
+
+\subsection{样本采集与DNA提取}
+\subsubsection*{实验前准备}
+\begin{itemize}
+    \item \textbf{自备材料}：小型高速离心机（最大离心力≥12,000×g）、水浴锅、2 ml 离心管、无水乙醇、RNase A 溶液（10 mg/ml）。
+    \item \textbf{试剂盒预处理}：
+    \begin{itemize}
+        \item 检查 Buffer ACL 和 Buffer CL 是否有沉淀，如有则在 65℃ 溶解后使用。
+        \item 在 Wash Solution 中加入规定量的无水乙醇（15 ml Wash Solution 加 45 ml 无水乙醇）。
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{标准操作流程}
+\begin{enumerate}
+    \item \textbf{样本采集与预处理}
+    \begin{itemize}
+        \item 使用口腔拭子在口腔内壁擦拭 6--10 次，晾干 2 小时后保存。
+        \item 注意事项：取样前 30 分钟内勿进食或饮水，避免样本污染。
+    \end{itemize}
+
+    \item \textbf{细胞裂解}
+    \begin{enumerate}[label=\arabic*）]
+        \item 将拭子棉签部分剪入 2 ml 离心管，加入 400 $\mu$l Buffer PBS。
+        \item 加入 400 $\mu$l Buffer ACL、200 $\mu$l Buffer CL 和 20 $\mu$l Proteinase K。
+        \item 震荡混匀后，置 65℃ 水浴 10 分钟，期间间歇混匀。
+    \end{enumerate}
+
+    \item \textbf{DNA 结合与纯化}
+    \begin{enumerate}[label=\arabic*）]
+        \item 加入 400 $\mu$l 无水乙醇，充分混匀。
+        \item 将全部溶液转移至硅胶膜吸附柱（吸附柱容量为 750 $\mu$l，若体积过大需分两次过柱）。
+        \item 10,000 rpm 离心 1 分钟，弃废液。
+    \end{enumerate}
+
+    \item \textbf{洗涤步骤}
+    \begin{enumerate}[label=\arabic*）]
+        \item 加入 500 $\mu$l Wash Solution，10,000 rpm 离心 1 分钟，弃废液。
+        \item 重复洗涤一次，确保彻底去除杂质。
+    \end{enumerate}
+
+    \item \textbf{DNA 洗脱}
+    \begin{enumerate}[label=\arabic*）]
+        \item 12,000 rpm 离心 2 分钟（关键步骤：去除残留乙醇）。
+        \item 将吸附柱转入新 1.5 ml 离心管，在膜中央加入 50 $\mu$l TE Buffer。
+        \item 静置 3 分钟后，12,000 rpm 离心 2 分钟，收集洗脱液。
+        \item 获得的 DNA 溶液可于 -20℃ 保存或立即使用。
+    \end{enumerate}
+\end{enumerate}
+
+\subsubsection*{质量保证}
+\begin{itemize}
+    \item 预期 OD$_{260}$/OD$_{280}$ 比值为 1.7--1.9。
+    \item 无需苯酚/氯仿等有毒试剂，符合安全标准。
+\end{itemize}
+
+\subsection{PCR 扩增（与原流程一致）}
+\subsubsection*{反应体系配制（50 $\mu$l 体系）}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+组分 & 实验组 & 对照组 \\
+\midrule
+模板 DNA & 5 $\mu$l & 5 $\mu$l ddH$_2$O \\
+引物1（10 $\mu$M） & 2 $\mu$l & 2 $\mu$l \\
+引物2（10 $\mu$M） & 2 $\mu$l & 2 $\mu$l \\
+2$\times$ Taq Master Mix & 25 $\mu$l & 25 $\mu$l \\
+ddH$_2$O & 16 $\mu$l & 16 $\mu$l \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection*{扩增程序}
+\begin{itemize}
+    \item 预变性：94℃ 5 分钟。
+    \item 35 个循环：94℃ 30 秒 → 55--60℃ 30 秒 → 72℃ 1 分钟。
+    \item 最终延伸：72℃ 10 分钟。
+\end{itemize}
+
+\subsection{电泳验证与测序}
+\begin{enumerate}
+    \item \textbf{琼脂糖凝胶电泳}：取 10 $\mu$l PCR 产物进行电泳分析，预期条带大小：HV1 区约 430 bp，HV2 区约 400 bp。
+    \item \textbf{样本送测}：有条带的样本移交测序分析。
+\end{enumerate}
+
+\subsection{序列分析与 SNP 鉴定}
+\begin{enumerate}
+    \item \textbf{软件分析}：使用 MEGA/PHYLIP 等软件比对 rCRS/RSRS 参考序列，识别 HV1/HV2 区单核苷酸多态性（SNP）。
+    \item \textbf{进化追踪}：与 RSRS 序列对比以确定单倍群，并分析个体间差异位点用于进化或亲缘关系推断。
+\end{enumerate}
+
+\subsection{常见问题解决方案}
+\begin{enumerate}
+    \item \textbf{得率低}：检查拭子类型（推荐植绒拭子）、确认 Wash Solution 中乙醇添加量、检查洗脱液 pH（建议 >7.5）。
+    \item \textbf{DNA 降解}：避免样本反复冻融，裂解时间不超过 30 分钟。
+    \item \textbf{杂质残留}：离心后开盖风干或轻轻孵育以去除乙醇残留。
+    \item \textbf{电泳异常}：建议使用 0.8\% 琼脂糖凝胶，适当减少上样量并检查 Marker/缓冲液浓度。
+\end{enumerate}
+
+\section{数据记录}
+\subsection{电泳结果}
+电泳结果如图~\ref{fig:electrophoresis} 所示，我的样品编号为6。（关于1号样品出现这种现象的解释：胶没凝好就拔孔导致第一个孔漏了，于是我们又在第八个空补了一点，但是已经跑了一会儿了，所以这条带比其他条带要靠后一点。）
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{electrophoresis.png}
+    \caption{电泳结果图}
+    \label{fig:electrophoresis}
+\end{figure}
+
+\subsection{测序数据}
+HV1区测序正常，可以直接从测序公司获取拼接后的序列数据。下图截取了HV1，F方向引物的部分测序结果（图~\ref{fig:hv1_seq}），可以看到信号较好，碱基识别清晰。
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{hv1_seq.png}
+    \caption{HV1区F方向引物测序结果截图}
+    \label{fig:hv1_seq}
+\end{figure}
+
+HV2去测序结果不理想，公司分别提供了F和R两个方向的测序数据，F方向出现套峰，R方向被报告为中断，但使用SnapGene尝试拼接，仍获得一段可用序列。人工查看F方向和R测序结果，峰还比较清晰，可以继续分析。F和R方向的部分测序结果以及最后的拼接结果示意如图~\ref{fig:hv2_seq} 所示。
+\begin{figure}[htbp!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{hv2_f.png}
+        \caption{HV2区F方向引物测序结果截图}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{hv2_r.png}
+        \caption{HV2区R方向引物测序结果截图}    
+    \end{subfigure}
+    \vfill
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{hv2_assemble.png}
+        \caption{HV2区F和R方向引物测序结果拼接示意图}        
+    \end{subfigure}
+    \caption{HV2区测序结果}
+    \label{fig:hv2_seq}
+\end{figure}
+
+HV1区测序结果如下：
+\begin{lstlisting}
+TATTCTCTGTTCTTTCATGGGGAAGCAGATTTGGGTACCACCCAAGTATTGGCTCACCCATCAACAACCGCTATGTATTTCGTACATTACTGCCAGCCACCATGAATATTGTACAGTACCATAAATACTTGACCACCTGTAGTACATGAAAACCCAACCCACATCAAAACCCCCTCCCCATGCTTACAAGCAAGTACAGCAATCAACCCTCAACTATCACACATCAACTGCAACTCCAAAGCCACCCCTCACCCACTAGGATACCAACAAACCTACCCACCCTTAACAGCACATAGTACATAAAGCCATTTACCGTACATAGCACATTACAGTCAAATCCCTTCTCGTCCCCATGGATGACCCCCCTCAGATAGGGGTCCCTTGAACC
+\end{lstlisting}
+
+HV2区测序结果如下：
+\begin{lstlisting}
+CATTTGGTATTTTCGTCTGGGGGGTGTGCACGCGATAGCATTGCGAGACGCTGGAGCCGGAGCACCCTATGTCGCAGTATCTGTCTTTGATTCCTGCCTCATCCTATTATTTATCGCACCTACGTTCAATATTACAGGCGAACATACTTACTAAAGTGTGTTAATTAATTAATGCTTGTAGGACATAATAATAACAATTGATGTCTGCACAGCCGCTTTCCACACAGACATCATAACAAAAAATTTCCACCAAACCCCCCCCTCCCCCCGCTTCTGGCCACAGCACTTAAACACATCTCTGCCAAACCCCAAAAACAAAGAACCCTAACACCAGCCTAACCAGATTTCAAATTTTATCTTTTGGCGGTATGCCTTTTTGAACAGA
+\end{lstlisting}
+
+\section{结果分析}
+\subsection{SNP鉴定}
+使用Mega12，分别将我的HV1区和HV2去测序结果与班级中所有测序成功的同学的测序结果进行比对，鉴定出SNP位点。HV1区共鉴定出26个SNP位点，详细结果见附表~\ref{tab:hv1_snp}；HV2区共鉴定出7个SNP位点，详细结果见附表~\ref{tab:hv2_snp}。
+\label{subsec:SNP}
+
+\subsection{进化树构建}
+使用MEGA12软件，根据HV1区和HV2区的序列，构建了最大似然法（Maximum Likelihood）进化树。进化树如图~\ref{fig:phylo_tree} 所示。
+\begin{figure}[htbp!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phylo1.png}
+        \caption{基于HV1区序列的进化树}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{phylo2.png}
+        \caption{基于HV2区序列的进化树}
+    \end{subfigure}
+    \caption{基于HV1区和HV2区序列的最大似然法进化树}
+    \label{fig:phylo_tree}
+\end{figure}
+\label{subsec:phylotree}
+
+\subsection{单倍群分析}
+为追踪人类进化轨迹，将我的测序结果与从phylotree.org下载的Reconstructed Sapiens Reference Sequence（RSRS）进行比对，共检测到96个SNP位点，详细结果见附表~\ref{tab:rsrs_snp}。
+
+使用Haplogrep 3，初步判断我的mtDNA\textbf{单倍群归属于F} (图~\ref{fig:haplogrep})。根据上一步检测到的SNP位点，在Phylotree上进一步确认，验证Haplogrep 3的预测无误。然而受测序长度的限制，我的mtDNA单倍群无法进一步精确。Haplogrep 3预测结果链接： \\
+\href{https://haplogrep.i-med.ac.at/jobs/PA27AU5CVWFQ7ZLlgLWpu8KE1zg6MMUYdtWRP9zHPeFs2DX6In}{https://haplogrep.i-med.ac.at/jobs/PA27AU5CVWFQ7ZLlgLWpu8KE1zg6MMUYdtWRP9zHPeFs2DX6In}
+
+\begin{figure}[htpb!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{haplogrep.png}
+    \caption{Haplogrep 3结果}
+    \label{fig:haplogrep}
+\end{figure}
+
+\section{实验结论}
+
+本实验通过口腔上皮细胞基因组DNA提取、PCR扩增、测序及生物信息学分析，系统研究了mtDNA高变区（HV1和HV2）的遗传变异特征，得出以下结论：
+
+\subsection{DNA提取与扩增}
+\begin{enumerate}
+    \item 成功利用Ezup柱式试剂盒从口腔拭子样本中提取基因组DNA，质量符合OD$_{260}$/OD$_{280}$比值1.7--1.9的标准，避免了传统苯酚/氯仿法的毒性风险。
+    \item PCR成功扩增mtDNA高变区HV1（约430 bp）和HV2（约400 bp）片段，电泳验证显示目的条带清晰，表明引物设计合理且扩增特异性良好。
+    \item HV1区测序质量较高，信号清晰可直接使用；HV2区出现套峰现象，通过正反向测序拼接获得可用序列，说明双向测序策略对提高序列准确性的重要性。
+\end{enumerate}
+
+\subsection{群体遗传变异分析}
+\begin{enumerate}
+    \item 班级群体内HV1区检测到26个SNP位点，HV2区检测到7个SNP位点，反映出mtDNA控制区的高度多态性特征，验证了D-loop区域作为分子标记的有效性。
+    \item SNP位点分布不均匀，集中于特定区域，符合mtDNA高变区的突变热点特征，这些变异为群体遗传结构分析和个体识别提供了丰富的遗传标记。
+    \item 通过最大似然法构建的系统发育树显示，不同个体间存在明显的分支结构，表明样本间的进化关系和遗传距离差异，HV1和HV2区域的进化树拓扑结构基本一致，相互验证了分析结果的可靠性。
+\end{enumerate}
+
+\subsection{进化追踪与单倍群鉴定}
+\begin{enumerate}
+    \item 将个人测序结果与RSRS（Reconstructed Sapiens Reference Sequence）比对，共检测到96个SNP位点，其中HV2区84个位点（位置146--433），HV1区12个位点（位置16066--16402），这些差异位点记录了现代人类从非洲起源后的进化轨迹。
+    \item 利用Haplogrep 3和Phylotree数据库分析，成功鉴定个人mtDNA单倍群归属为\textbf{F单倍群}，该单倍群主要分布于东亚和东南亚地区，与中国人群的遗传背景相符，验证了mtDNA单倍群分析在人类起源与迁徙研究中的应用价值。
+    \item 受测序长度限制，无法进一步细分至F单倍群的亚型，提示全长mtDNA测序对精确单倍群鉴定的必要性，但现有数据已足以进行宏观的群体归属和地理来源推断。
+\end{enumerate}
+
+\subsection{实验技术与方法}
+\begin{enumerate}
+    \item 掌握了从样本采集、DNA提取、PCR扩增、电泳检测到测序分析的完整实验流程，建立了mtDNA分析的标准操作规范。
+    \item 熟练应用MEGA软件进行序列比对、SNP检测和系统发育树构建，运用Haplogrep和Phylotree等在线工具进行单倍群分析，提升了生物信息学数据处理能力。
+    \item 理解了mtDNA母系遗传、高突变率、无重组等遗传特性，以及D-loop区域HV1和HV2作为分子标记在群体遗传学、法医学和进化生物学中的应用原理。
+\end{enumerate}
+
+综上所述，本实验系统验证了mtDNA高变区在人类进化分析和群体遗传研究中的重要价值，成功通过SNP分析追踪了个体的母系遗传谱系，鉴定出F单倍群归属，为理解东亚人群的遗传结构和迁徙历史提供了分子证据。实验结果表明，mtDNA D-loop区域的序列变异分析是研究人类起源、迁徙和群体分化的有效手段。
+
+\section{思考题}
+
+\subsection*{1. mtDNA相比于核DNA高突变率的原因？}
+
+mtDNA的突变率约为核DNA的10倍，主要原因包括：
+
+\begin{enumerate}
+    \item \textbf{氧化应激环境}：线粒体是细胞进行氧化磷酸化的主要场所，在ATP合成过程中会产生大量活性氧自由基（ROS），这些自由基对mtDNA造成持续的氧化损伤，导致碱基修饰和DNA链断裂。由于mtDNA紧邻电子传递链，直接暴露于高浓度ROS环境中，受损伤程度远高于细胞核内的核DNA。
+    
+    \item \textbf{DNA修复机制不完善}：mtDNA缺乏组蛋白保护，呈裸露状态，更易受到损伤。同时，线粒体内的DNA修复系统相对简单，缺乏核苷酸切除修复（NER）等重要修复途径，虽具备碱基切除修复（BER）和错配修复（MMR）机制，但修复效率远低于核DNA，导致突变更容易积累和固定。
+    
+    \item \textbf{复制保真度较低}：线粒体DNA聚合酶γ（Pol γ）虽然具有3'→5'外切酶活性进行校对，但其整体保真度仍低于核DNA复制酶复合体。此外，mtDNA复制不依赖细胞周期，持续进行高频率复制，增加了复制错误的累积机会。
+    
+    \item \textbf{缺乏内含子和非编码区保护}：mtDNA基因组极为紧凑（约16.5 kb），编码序列占比高达93\%，几乎没有内含子和保护性非编码区。这意味着突变更容易直接影响功能基因，虽然有害突变会被选择淘汰，但中性或轻微有害突变更易固定，导致观察到的高突变率。
+    
+    \item \textbf{母系遗传与瓶颈效应}：mtDNA通过卵细胞母系遗传，在生殖细胞发育过程中经历瓶颈效应，导致突变的随机漂变和快速固定，加速了mtDNA的进化速率。
+\end{enumerate}
+
+\subsection*{2. mtDNA多态性有哪些应用？}
+
+mtDNA多态性因其母系遗传、高突变率和无重组等特性，在多个领域具有重要应用：
+
+\begin{enumerate}
+    \item \textbf{人类进化与起源研究}：
+    \begin{itemize}
+        \item 通过mtDNA单倍群分析，追溯现代人类"走出非洲"的迁徙路线和时间，重建人类祖先的地理分布和扩散历史。
+        \item 线粒体夏娃理论：利用mtDNA系统发育分析，推测所有现代人类mtDNA均可追溯到约20万年前生活在非洲的共同女性祖先。
+        \item 研究不同人群的遗传关系和分化时间，揭示古代人群迁徙、混合和隔离事件。
+    \end{itemize}
+    
+    \item \textbf{法医学与个体识别}：
+    \begin{itemize}
+        \item 高度降解样本（如骨骼、牙齿、毛发）的个体鉴定，因mtDNA拷贝数高（每个细胞数百至数千份），在核DNA严重降解时仍能成功提取和分析。
+        \item 母系亲缘关系鉴定：当无法获取直系父母样本时，可通过比对母系亲属（如外祖母、姨母）的mtDNA确认身份。
+        \item 灾难遇难者身份识别和历史人物遗骸鉴定（如末代沙皇家族遗骸鉴定）。
+    \end{itemize}
+    
+    \item \textbf{群体遗传学与生物地理学}：
+    \begin{itemize}
+        \item 研究种群遗传结构、基因流动和遗传多样性，评估濒危物种的保护遗传学问题。
+        \item 分析地理隔离群体的分化程度和迁徙历史，揭示环境因素对种群分布的影响。
+        \item 构建生物地理分布模式，推断物种扩散和定居的历史过程。
+    \end{itemize}
+    
+    \item \textbf{疾病遗传学与医学研究}：
+    \begin{itemize}
+        \item mtDNA突变与线粒体疾病的关联研究：如Leber遗传性视神经病（LHON）与nt11778 G>A突变、MELAS综合征与nt3243 A>G突变等。
+        \item 研究mtDNA多态性对复杂疾病（如帕金森病、阿尔茨海默病、糖尿病、癌症）易感性的影响。
+        \item 线粒体单倍群与疾病风险、药物代谢、运动能力等表型关联分析。
+        \item mtDNA异质性（heteroplasmy）在疾病表达和遗传咨询中的应用。
+    \end{itemize}
+    
+    \item \textbf{古DNA研究与考古学}：
+    \begin{itemize}
+        \item 从古代样本（如尼安德特人、丹尼索瓦人化石）中提取mtDNA，研究古人类与现代人类的遗传关系。
+        \item 追溯农业起源、家养动植物驯化历史和古代贸易路线。
+        \item 重建古代文明的人口迁移和文化交流模式。
+    \end{itemize}
+    
+    \item \textbf{物种鉴定与系统发育分析}：
+    \begin{itemize}
+        \item 利用mtDNA条形码（如COI基因）进行物种快速鉴定，应用于生物多样性调查、食品安全检测和濒危物种保护。
+        \item 构建动物系统发育树，解析物种间的进化关系和分类地位。
+    \end{itemize}
+\end{enumerate}
+
+综上所述，mtDNA多态性已成为遗传学、进化生物学、法医学和医学研究中的重要分子标记，为理解人类起源、疾病机制和生物多样性提供了强有力的工具。
+
+\subsection{3. 分析比较你和同学之间序列的差异。}
+详见章节~\ref{subsec:SNP}和~\ref{subsec:phylotree}
+\section{收获体会}
+学会使用MEGA软件，进行序列对齐，SNP分析，绘制进化树，学会使用phylotree.org查找单倍群，同时了解到Haplogrep 3等快捷查找单倍群的工具。
+
+\newpage
+\appendix
+\section{附表}
+
+\begin{table}[H]
+\centering
+\caption{HV1区SNP分析结果}
+\label{tab:hv1_snp}
+\small
+\begin{tabular}{ccccccccccccccccccc}
+\toprule
+\textbf{位置} & \textbf{1-4} & \textbf{1-5} & \textbf{2-1} & \textbf{2-5} & \textbf{2-6} & \textbf{2-7} & \textbf{3-1} & \textbf{3-3} & \textbf{3-4} & \textbf{3-5} & \textbf{3-6} & \textbf{3-8} & \textbf{4-1} & \textbf{4-3} & \textbf{4-4} & \textbf{4-6} & \textbf{4-7} & \textbf{4-8} \\
+\midrule
+50 & A & A & A & A & G & A & A & A & A & A & A & A & A & A & A & A & A & A \\
+77 & T & T & T & T & T & T & T & T & T & T & T & T & T & T & T & C & T & T \\
+95 & C & C & C & T & C & C & C & C & C & C & C & C & C & C & C & C & C & C \\
+108 & T & C & T & T & T & T & T & T & T & T & T & T & T & T & T & T & T & T \\
+110 & T & T & T & T & T & C & T & T & T & T & T & T & T & T & T & T & T & T \\
+113 & G & G & G & A & A & G & A & G & G & G & G & G & G & G & G & G & G & G \\
+129 & G & G & G & G & G & G & G & G & G & G & A & G & G & G & G & G & G & G \\
+142 & A & A & A & A & A & A & A & A & A & A & A & G & A & A & A & A & A & A \\
+146 & A & A & A & A & G & A & A & A & A & A & A & A & A & A & A & A & A & A \\
+152 & C & C & C & C & C & C & C & C & C & C & T & C & C & C & C & C & C & C \\
+156 & T & T & T & T & C & T & T & T & T & T & T & T & C & T & T & T & T & T \\
+163 & C & C & C & C & C & C & C & C & T & C & C & C & C & C & C & C & C & C \\
+172 & C & C & C & C & C & C & C & C & C & C & T & C & C & C & C & C & C & C \\
+176 & C & C & C & C & C & C & C & C & T & C & C & C & C & C & C & C & C & C \\
+207 & T & T & T & T & C & T & T & T & T & T & T & T & T & T & T & T & T & T \\
+218 & C & C & C & C & C & C & C & T & C & C & C & C & C & C & C & C & C & C \\
+240 & C & T & C & C & C & C & C & C & C & C & C & C & C & C & C & C & C & C \\
+241 & C & C & C & A & C & C & C & C & C & C & T & C & C & C & C & C & A & A \\
+245 & C & C & C & T & C & C & C & C & C & C & C & C & C & C & C & C & T & T \\
+274 & T & T & C & C & C & T & C & C & T & C & C & C & C & C & C & C & C & C \\
+288 & T & T & T & T & C & T & T & T & T & T & T & T & T & T & T & T & T & T \\
+295 & T & T & T & T & T & T & T & T & T & T & C & T & T & T & T & T & T & T \\
+300 & A & A & A & A & A & A & A & G & A & A & A & A & A & A & A & A & A & A \\
+303 & A & A & G & G & G & A & G & G & A & G & G & G & G & G & G & G & G & G \\
+309 & T & T & T & T & T & T & T & T & T & T & T & T & T & C & T & C & T & T \\
+346 & C & C & C & T & T & C & C & C & C & C & T & C & C & C & C & C & T & T \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{HV2区SNP分析结果}
+\label{tab:hv2_snp}
+\small
+\begin{tabular}{ccccccccccccc}
+\toprule
+\textbf{位置} & \textbf{1-1} & \textbf{1-4} & \textbf{1-5} & \textbf{2-3} & \textbf{2-6} & \textbf{3-1} & \textbf{3-3} & \textbf{3-7} & \textbf{3-8} & \textbf{4-3} & \textbf{4-5} & \textbf{4-8} \\
+\midrule
+82 & C & C & C & C & C & C & C & C & T & T & C & T \\
+84 & T & C & C & T & T & C & T & T & C & T & C & T \\
+126 & C & C & C & C & C & C & C & T & C & C & C & C \\
+132 & A & A & G & A & A & A & A & A & A & G & A & A \\
+167 & A & G & G & A & A & A & A & A & A & A & A & A \\
+195 & G & A & G & G & G & T & G & G & G & G & G & G \\
+230 & C & C & C & C & C & C & C & C & C & C & T & C \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{基于RSRS参考序列的SNP分析结果}
+\label{tab:rsrs_snp}
+\small
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{rccc}
+\toprule
+\textbf{位置} & \textbf{RSRS} & \textbf{HV1} & \textbf{HV2} \\
+\midrule
+146 & C & - & T \\
+152 & C & - & T \\
+195 & C & - & T \\
+247 & A & - & G \\
+310 & T & - & C \\
+311 & C & - & T \\
+316 & G & - & C \\
+318 & T & - & G \\
+319 & T & - & C \\
+320 & C & - & T \\
+322 & G & - & C \\
+323 & G & - & T \\
+324 & C & - & G \\
+325 & C & - & G \\
+326 & A & - & C \\
+329 & G & - & C \\
+330 & C & - & A \\
+331 & A & - & G \\
+333 & T & - & A \\
+334 & T & - & C \\
+335 & A & - & T \\
+336 & A & - & T \\
+338 & C & - & A \\
+342 & T & - & C \\
+343 & C & - & A \\
+347 & G & - & C \\
+348 & C & - & T \\
+349 & C & - & G \\
+350 & A & - & C \\
+351 & A & - & C \\
+353 & C & - & A \\
+354 & C & - & A \\
+357 & A & - & C \\
+358 & A & - & C \\
+362 & C & - & A \\
+364 & A & - & C \\
+366 & G & - & A \\
+368 & A & - & G \\
+369 & C & - & A \\
+370 & C & - & A \\
+372 & T & - & C \\
+373 & A & - & C \\
+374 & A & - & T \\
+375 & C & - & A \\
+378 & C & - & A \\
+379 & A & - & C \\
+380 & G & - & C \\
+381 & C & - & A \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{rccc}
+\toprule
+\textbf{位置} & \textbf{RSRS} & \textbf{HV1} & \textbf{HV2} \\
+\midrule
+382 & C & - & G \\
+383 & T & - & C \\
+384 & A & - & C \\
+385 & A & - & T \\
+386 & C & - & A \\
+387 & C & - & A \\
+388 & A & - & C \\
+389 & G & - & C \\
+391 & T & - & G \\
+392 & T & - & A \\
+394 & C & - & T \\
+395 & A & - & T \\
+396 & A & - & C \\
+398 & T & - & A \\
+399 & T & - & A \\
+402 & A & - & T \\
+404 & C & - & A \\
+406 & T & - & C \\
+409 & G & - & T \\
+410 & G & - & T \\
+411 & C & - & G \\
+413 & G & - & C \\
+414 & T & - & G \\
+415 & A & - & G \\
+417 & G & - & A \\
+418 & C & - & T \\
+419 & A & - & G \\
+421 & T & - & C \\
+425 & A & - & T \\
+426 & A & - & T \\
+427 & C & - & G \\
+429 & G & - & A \\
+430 & T & - & C \\
+431 & C & - & A \\
+432 & A & - & G \\
+433 & C & - & A \\
+16066 & A & G & - \\
+16162 & A & G & - \\
+16172 & T & C & - \\
+16187 & T & C & - \\
+16189 & C & T & - \\
+16223 & T & C & - \\
+16230 & G & A & - \\
+16278 & T & C & - \\
+16304 & T & C & - \\
+16311 & C & T & - \\
+16400 & C & A & - \\
+16402 & A & C & - \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\end{table}
+
+\section{附加信息}
+本次实验的所有原始数据和分析脚本均已上传至GitHub，链接如下： \\
+\href{
+
+\end{document}
