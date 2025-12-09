@@ -7,7 +7,7 @@
 \usepackage{fontspec}            % XeLaTeX 字体接口
 \usepackage{xeCJK}               % 中文支持
 \setCJKmainfont[AutoFakeBold=true]{SimSun} % 正文中文（可替换为 SimHei, 宋体, 思源宋体等）
-\setCJKsansfont{SimHei}         % 无衬线中文
+\setCJKsansfont[AutoFakeBold=true]{SimHei}         % 无衬线中文（黑体）
 \setCJKmonofont{FangSong}       % 等宽中文（可选）
 \setmainfont{Times New Roman}    % 英文字体
 \setsansfont{Arial}
@@ -72,11 +72,34 @@
 \usepackage{indentfirst}
 \usepackage{cleveref}
 \usepackage{dnaseq}
+\usepackage{titlesec}            % 标题格式定制
+
+% -------------------- 标题格式设置 --------------------
+% 设置section标题为黑体加粗
+\titleformat{\section}
+    {\Large\sffamily\bfseries}  % sffamily调用黑体，bfseries加粗
+    {\thesection}
+    {1em}
+    {}
+
+% 设置subsection标题为黑体加粗
+\titleformat{\subsection}
+    {\large\sffamily\bfseries}
+    {\thesubsection}
+    {1em}
+    {}
+
+% 设置subsubsection标题为黑体加粗
+\titleformat{\subsubsection}
+    {\normalsize\sffamily\bfseries}
+    {\thesubsubsection}
+    {1em}
+    {}
 
 % -------------------- 文档开始 --------------------
 \begin{document}
 
-\title{mtDNA进化分析}
+\title{\sffamily\textbf{mtDNA进化分析}}
 \author{王翔宇 2023521039}
 \date{}
 \maketitle
@@ -97,7 +120,7 @@
 
 \section{实验原理}
 
-\subsection*{一、线粒体的基本结构与功能}
+\subsection{线粒体的基本结构与功能}
 线粒体是细胞中的重要细胞器，其结构与功能直接关联到mtDNA的遗传特性：
 \begin{itemize}
     \item \textbf{结构特征}：
@@ -109,7 +132,7 @@
     \item \textbf{功能角色}：mtDNA编码部分线粒体蛋白，参与能量代谢，其突变可能影响细胞功能，如与Leber遗传性视神经病等疾病相关。
 \end{itemize}
 
-\subsection*{二、线粒体DNA的遗传学特征}
+\subsection{线粒体DNA的遗传学特征}
 mtDNA的遗传方式具有特殊性，下列六个关键特征决定了其在进化分析和亲缘关系研究中的价值：
 \begin{enumerate}
     \item \textbf{母系遗传}：mtDNA通常通过母系传递，但也有研究（如Lu等、Rius等）探讨父系遗传的可能性，结论是双亲遗传并非常见，临床实践中仍以母系遗传为主。
@@ -120,14 +143,14 @@ mtDNA的遗传方式具有特殊性，下列六个关键特征决定了其在进
     \item \textbf{多态性}：mtDNA在人群中呈现高度变异，为人类进化和疾病研究提供了分子标记。
 \end{enumerate}
 
-\subsection*{三、mtDNA的多态性类型及其机制}
+\subsection{mtDNA的多态性类型及其机制}
 文档将mtDNA多态性分为两类，这直接关联到实验中的序列分析方法：
 \begin{itemize}
     \item \textbf{点的多态性}：指单个碱基的突变（如碱基替换），可能导致限制性内切酶位点的丢失或新增，可通过Southern杂交或酶切图谱等技术检测。例如，Leber遗传性视神经病与nt11778 G$>$A突变相关，体现了点突变的功能影响。
     \item \textbf{序列多态性}：由缺失、重复或插入事件引起，或由于高变区内串联重复序列的拷贝数差异所致。这类多态性不一定改变酶切位点的碱基，但会改变其在基因组中的相对位置，常需通过PCR与测序来分析。序列多态性主要集中在D-loop（控制区），包括高变区HV1（nt16024--nt16365，342 bp）和HV2（nt73--nt340，268 bp），这些区域变异速率高，是实验的重点分析靶点。
 \end{itemize}
 
-\subsection*{四、高变区（HV1和HV2）的关键作用}
+\subsection{高变区（HV1和HV2）的关键作用}
 高变区HV1和HV2是mtDNA中变异最集中的区域，碱基变异速率高，适用于追踪人类进化轨迹和进行群体分析。实验原理中常用于PCR扩增的引物示例包括HV1引物（如L15997和H16391），可用于扩增约430 bp的HV1片段；HV2引物用于扩增约400 bp的HV2片段。通过扩增并测序这些区域，结合参考序列（如Revised Cambridge Reference Sequence或RSRS）进行比对与SNP分析，可识别个体间的差异并初步判断mtDNA单倍群归属。
 
 以上内容已插入实验原理节，便于后续对PCR、酶切及序列分析的原理与实验设计进行引用和展开。
